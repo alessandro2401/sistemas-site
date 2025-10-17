@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portais e Sistemas - Administradora Mutual</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 50px;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        .systems-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+
+        .system-card {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            text-decoration: none;
+            color: inherit;
+            display: block;
+        }
+
+        .system-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.3);
+        }
+
+        .system-card .icon {
+            font-size: 3rem;
+            margin-bottom: 15px;
+            display: block;
+        }
+
+        .system-card h3 {
+            color: #667eea;
+            font-size: 1.4rem;
+            margin-bottom: 10px;
+        }
+
+        .system-card p {
+            color: #666;
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+
+        .system-card .url {
+            color: #999;
+            font-size: 0.85rem;
+            margin-top: 10px;
+            display: block;
+            font-family: monospace;
+        }
+
+        .restricted {
+            background: linear-gradient(135deg, #ffeaa7 0%, #fdcb6e 100%);
+            border: 2px solid #f39c12;
+        }
+
+        .restricted .icon::after {
+            content: ' 🔒';
+            font-size: 1.5rem;
+        }
+
+        .footer {
+            text-align: center;
+            color: white;
+            margin-top: 50px;
+            opacity: 0.8;
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .systems-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>💼 Portais e Sistemas</h1>
+            <p>Acesso centralizado aos sistemas internos da Administradora Mutual</p>
+        </div>
+
+        <div class="systems-grid">
+            <!-- Calculadora SMA -->
+            <a href="https://sma.administradoramutual.com.br" class="system-card" target="_blank">
+                <span class="icon">🧮</span>
+                <h3>Calculadora SMA</h3>
+                <p>Sistema de cálculo para Socorro Mútuo Acordo - Antecipação de valores de reparo</p>
+                <span class="url">sma.administradoramutual.com.br</span>
+            </a>
+
+            <!-- Calculadora SMT -->
+            <a href="https://total.administradoramutual.com.br" class="system-card" target="_blank">
+                <span class="icon">📊</span>
+                <h3>Calculadora SMT</h3>
+                <p>Sistema de cálculo para Socorro Mútuo Total - Perda total de veículos</p>
+                <span class="url">total.administradoramutual.com.br</span>
+            </a>
+
+            <!-- POP Sinistro -->
+            <a href="https://sinistro.administradoramutual.com.br" class="system-card restricted" target="_blank">
+                <span class="icon">📋</span>
+                <h3>POP Evento e Sinistro</h3>
+                <p>Procedimentos operacionais padrão para gestão de sinistros</p>
+                <span class="url">sinistro.administradoramutual.com.br</span>
+            </a>
+
+            <!-- POP Financeiro -->
+            <a href="https://financeiro.administradoramutual.com.br" class="system-card restricted" target="_blank">
+                <span class="icon">💰</span>
+                <h3>POP Financeiro</h3>
+                <p>Procedimentos operacionais do departamento financeiro</p>
+                <span class="url">financeiro.administradoramutual.com.br</span>
+            </a>
+
+            <!-- Manual da Marca -->
+            <a href="https://marca.administradoramutual.com.br" class="system-card restricted" target="_blank">
+                <span class="icon">🎨</span>
+                <h3>Manual da Marca</h3>
+                <p>Identidade visual, logo, cores e aplicações da marca</p>
+                <span class="url">marca.administradoramutual.com.br</span>
+            </a>
+
+            <!-- Central de Notícias -->
+            <a href="https://noticias.administradoramutual.com.br" class="system-card" target="_blank">
+                <span class="icon">📰</span>
+                <h3>Central de Notícias</h3>
+                <p>Notícias do mercado de seguros e proteção patrimonial</p>
+                <span class="url">noticias.administradoramutual.com.br</span>
+            </a>
+
+            <!-- Due Diligence -->
+            <a href="https://formulario.administradoramutual.com.br" class="system-card" target="_blank">
+                <span class="icon">📝</span>
+                <h3>Due Diligence</h3>
+                <p>Formulário de análise de viabilidade de carteira</p>
+                <span class="url">formulario.administradoramutual.com.br</span>
+            </a>
+
+            <!-- Gestão Segura -->
+            <a href="https://gestaosegura.administradoramutual.com.br" class="system-card restricted" target="_blank">
+                <span class="icon">📈</span>
+                <h3>Análise Gestão Segura</h3>
+                <p>Análise completa dos POPs da Gestão Segura</p>
+                <span class="url">gestaosegura.administradoramutual.com.br</span>
+            </a>
+
+            <!-- POPs Comerciais -->
+            <a href="https://comercial.administradoramutual.com.br" class="system-card restricted" target="_blank">
+                <span class="icon">🤝</span>
+                <h3>POPs Comerciais</h3>
+                <p>Procedimentos operacionais do setor comercial</p>
+                <span class="url">comercial.administradoramutual.com.br</span>
+            </a>
+        </div>
+
+        <div class="footer">
+            <p>🔒 Sistemas com cadeado são de acesso restrito a colaboradores autorizados</p>
+            <p style="margin-top: 20px;">© 2025 Administradora Mutual - Proteção Patrimonial Mutualista</p>
+        </div>
+    </div>
+</body>
+</html>
+
