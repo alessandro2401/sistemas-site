@@ -4,6 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Portais e Sistemas - Administradora Mutual</title>
+    <link rel="icon" type="image/png" sizes="16x16" href="favicon-16.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="favicon-192.png">
+    <link rel="icon" type="image/png" sizes="512x512" href="favicon-512.png">
     <style>
         * {
             margin: 0;
@@ -107,6 +111,58 @@
             opacity: 0.8;
         }
 
+        .user-bar {
+            position: fixed;
+            top: 0;
+            right: 0;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 12px 20px;
+            border-radius: 0 0 0 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            z-index: 1000;
+        }
+
+        .user-bar .user-info {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+        }
+
+        .user-bar .user-name {
+            font-weight: 600;
+            color: #667eea;
+            font-size: 0.9rem;
+        }
+
+        .user-bar .user-email {
+            font-size: 0.75rem;
+            color: #666;
+        }
+
+        .user-bar .btn-logout {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .user-bar .btn-logout:hover {
+            background: #764ba2;
+            transform: translateY(-1px);
+        }
+
+        .container {
+            padding-top: 20px;
+        }
+
         @media (max-width: 768px) {
             .header h1 {
                 font-size: 2rem;
@@ -119,6 +175,14 @@
     </style>
 </head>
 <body>
+    <!-- Barra de usuário -->
+    <div class="user-bar" id="userBar" style="display: none;">
+        <div class="user-info">
+            <span class="user-name" id="userName"></span>
+            <span class="user-email" id="userEmail"></span>
+        </div>
+        <button class="btn-logout" id="btnLogout">Sair</button>
+    </div>
     <div class="container">
         <div class="header">
             <h1>💼 Portais e Sistemas</h1>
@@ -220,6 +284,35 @@
             <p style="margin-top: 20px;">© 2025 Administradora Mutual - Proteção Patrimonial Mutualista</p>
         </div>
     </div>
+
+    <script src="auth.js"></script>
+    <script>
+        // Protege a página - redireciona para login se não autenticado
+        if (!authManager.protectPage()) {
+            // Se retornar false, já foi redirecionado
+        } else {
+            // Usuário autenticado - mostra barra de usuário
+            const user = authManager.getCurrentUser();
+            const userBar = document.getElementById('userBar');
+            const userName = document.getElementById('userName');
+            const userEmail = document.getElementById('userEmail');
+            const btnLogout = document.getElementById('btnLogout');
+
+            if (user) {
+                userName.textContent = user.name;
+                userEmail.textContent = user.email;
+                userBar.style.display = 'flex';
+            }
+
+            // Handler de logout
+            btnLogout.addEventListener('click', () => {
+                if (confirm('Deseja realmente sair do sistema?')) {
+                    authManager.logout();
+                    window.location.href = 'login.html';
+                }
+            });
+        }
+    </script>
 </body>
 </html>
 
