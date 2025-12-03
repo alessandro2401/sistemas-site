@@ -8,6 +8,7 @@
     <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
     <link rel="icon" type="image/png" sizes="192x192" href="favicon-192.png">
     <link rel="icon" type="image/png" sizes="512x512" href="favicon-512.png">
+    <script src="https://unpkg.com/lucide@latest"></script>
     <style>
         * {
             margin: 0;
@@ -69,9 +70,12 @@
         }
 
         .system-card .icon {
-            font-size: 3rem;
+            width: 3rem;
+            height: 3rem;
             margin-bottom: 15px;
             display: block;
+            color: #667eea;
+            stroke-width: 2;
         }
 
         .system-card h3 {
@@ -99,9 +103,17 @@
             border: 2px solid #f39c12;
         }
 
-        .restricted .icon::after {
-            content: ' 🔒';
-            font-size: 1.5rem;
+        .restricted .icon-lock {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 1.5rem;
+            height: 1.5rem;
+            color: #f39c12;
+        }
+        
+        .restricted {
+            position: relative;
         }
 
         .footer {
@@ -185,14 +197,14 @@
     </div>
     <div class="container">
         <div class="header">
-            <h1>💼 Portais e Sistemas</h1>
+            <h1><i data-lucide="briefcase" style="display: inline-block; width: 2.5rem; height: 2.5rem; vertical-align: middle; margin-right: 10px;"></i>Portais e Sistemas</h1>
             <p>Acesso centralizado aos sistemas internos da Administradora Mutual</p>
         </div>
 
         <div class="systems-grid">
             <!-- Calculadora SMA -->
             <a href="https://sma.administradoramutual.com.br" class="system-card" target="_blank">
-                <span class="icon">🧮</span>
+                <i data-lucide="calculator" class="icon"></i>
                 <h3>Calculadora SMA</h3>
                 <p>Sistema de cálculo para Socorro Mútuo Acordo - Antecipação de valores de reparo</p>
                 <span class="url">sma.administradoramutual.com.br</span>
@@ -200,7 +212,7 @@
 
             <!-- Calculadora SMT -->
             <a href="https://total.administradoramutual.com.br" class="system-card" target="_blank">
-                <span class="icon">📊</span>
+                <i data-lucide="bar-chart-3" class="icon"></i>
                 <h3>Calculadora SMT</h3>
                 <p>Sistema de cálculo para Socorro Mútuo Total - Perda total de veículos</p>
                 <span class="url">total.administradoramutual.com.br</span>
@@ -208,7 +220,8 @@
 
             <!-- POP Sinistro -->
             <a href="https://sinistro.administradoramutual.com.br" class="system-card restricted" target="_blank">
-                <span class="icon">📋</span>
+                <i data-lucide="lock" class="icon-lock"></i>
+                <i data-lucide="clipboard-list" class="icon"></i>
                 <h3>POP Evento e Sinistro</h3>
                 <p>Procedimentos operacionais padrão para gestão de sinistros</p>
                 <span class="url">sinistro.administradoramutual.com.br</span>
@@ -216,7 +229,8 @@
 
             <!-- POP Financeiro -->
             <a href="https://financeiro.administradoramutual.com.br" class="system-card restricted" target="_blank">
-                <span class="icon">💰</span>
+                <i data-lucide="lock" class="icon-lock"></i>
+                <i data-lucide="dollar-sign" class="icon"></i>
                 <h3>POP Financeiro</h3>
                 <p>Procedimentos operacionais do departamento financeiro</p>
                 <span class="url">financeiro.administradoramutual.com.br</span>
@@ -224,7 +238,8 @@
 
             <!-- Manual da Marca -->
             <a href="https://marca.administradoramutual.com.br" class="system-card restricted" target="_blank">
-                <span class="icon">🎨</span>
+                <i data-lucide="lock" class="icon-lock"></i>
+                <i data-lucide="palette" class="icon"></i>
                 <h3>Manual da Marca</h3>
                 <p>Identidade visual, logo, cores e aplicações da marca</p>
                 <span class="url">marca.administradoramutual.com.br</span>
@@ -232,7 +247,7 @@
 
             <!-- Central de Notícias -->
             <a href="https://noticias.administradoramutual.com.br" class="system-card" target="_blank">
-                <span class="icon">📰</span>
+                <i data-lucide="newspaper" class="icon"></i>
                 <h3>Central de Notícias</h3>
                 <p>Notícias do mercado de seguros e proteção patrimonial</p>
                 <span class="url">noticias.administradoramutual.com.br</span>
@@ -240,7 +255,7 @@
 
             <!-- Due Diligence -->
             <a href="https://formulario.administradoramutual.com.br" class="system-card" target="_blank">
-                <span class="icon">📝</span>
+                <i data-lucide="file-text" class="icon"></i>
                 <h3>Due Diligence</h3>
                 <p>Formulário de análise de viabilidade de carteira</p>
                 <span class="url">formulario.administradoramutual.com.br</span>
@@ -248,7 +263,8 @@
 
             <!-- Gestão Segura -->
             <a href="https://gestaosegura.administradoramutual.com.br" class="system-card restricted" target="_blank">
-                <span class="icon">📈</span>
+                <i data-lucide="lock" class="icon-lock"></i>
+                <i data-lucide="trending-up" class="icon"></i>
                 <h3>Análise Gestão Segura</h3>
                 <p>Análise completa dos POPs da Gestão Segura</p>
                 <span class="url">gestaosegura.administradoramutual.com.br</span>
@@ -256,7 +272,7 @@
 
             <!-- Material de Constituição S4 -->
             <a href="https://s4.administradoramutual.com.br" class="system-card" target="_blank">
-                <span class="icon">🏢</span>
+                <i data-lucide="building-2" class="icon"></i>
                 <h3>Material de Constituição S4</h3>
                 <p>Documentação e informações sobre a constituição da seguradora</p>
                 <span class="url">s4.administradoramutual.com.br</span>
@@ -264,7 +280,8 @@
 
             <!-- POPs Comerciais -->
             <a href="https://comercial.administradoramutual.com.br" class="system-card restricted" target="_blank">
-                <span class="icon">🤝</span>
+                <i data-lucide="lock" class="icon-lock"></i>
+                <i data-lucide="handshake" class="icon"></i>
                 <h3>POPs Comerciais</h3>
                 <p>Procedimentos operacionais do setor comercial</p>
                 <span class="url">comercial.administradoramutual.com.br</span>
@@ -272,7 +289,7 @@
 
             <!-- Gerador de Assinatura -->
             <a href="https://assinaturas.administradoramutual.com.br" class="system-card" target="_blank">
-                <span class="icon">✉️</span>
+                <i data-lucide="mail" class="icon"></i>
                 <h3>Gerador de Assinatura</h3>
                 <p>Ferramenta para criar e personalizar a assinatura de e-mail padrão</p>
                 <span class="url">assinaturas.administradoramutual.com.br</span>
@@ -280,7 +297,7 @@
 
             <!-- Portal de Documentação -->
             <a href="https://docs.administradoramutual.com.br" class="system-card" target="_blank">
-                <span class="icon">📚</span>
+                <i data-lucide="book-open" class="icon"></i>
                 <h3>Portal de Documentação</h3>
                 <p>Documentação técnica completa de todos os sites e sistemas do ecossistema digital</p>
                 <span class="url">docs.administradoramutual.com.br</span>
@@ -288,7 +305,7 @@
 
             <!-- Grupo MMB -->
             <a href="https://grupommb.administradoramutual.com.br" class="system-card" target="_blank">
-                <span class="icon">🏛️</span>
+                <i data-lucide="building" class="icon"></i>
                 <h3>Grupo MMB</h3>
                 <p>Hub Administrativo e de Pós-Venda - Gestão operacional de 7 marcas do ecossistema</p>
                 <span class="url">grupommb.administradoramutual.com.br</span>
@@ -296,7 +313,7 @@
         </div>
 
         <div class="footer">
-            <p>🔒 Sistemas com cadeado são de acesso restrito a colaboradores autorizados</p>
+            <p><i data-lucide="lock" style="display: inline-block; width: 1.2rem; height: 1.2rem; vertical-align: middle; margin-right: 5px;"></i>Sistemas com cadeado são de acesso restrito a colaboradores autorizados</p>
             <p style="margin-top: 20px;">© 2025 Administradora Mutual - Proteção Patrimonial Mutualista</p>
         </div>
     </div>
@@ -328,6 +345,9 @@
                 }
             });
         }
+        
+        // Inicializar ícones Lucide
+        lucide.createIcons();
     </script>
 </body>
 </html>
