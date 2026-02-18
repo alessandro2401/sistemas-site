@@ -7,31 +7,31 @@
 const MASTER_USERS = [
     {
         email: 'presidencia@administradoramutual.com.br',
-        password: 'senha123',
+        password: '1234567890',
         name: 'Presidência',
         level: 'Master'
     },
     {
         email: 'diretoria@administradoramutual.com.br',
-        password: 'senha123',
+        password: '1234567890',
         name: 'Diretoria',
         level: 'Master'
     },
     {
         email: 'comercial@administradoramutual.com.br',
-        password: 'senha123',
+        password: '1234567890',
         name: 'Comercial',
         level: 'Master'
     },
     {
         email: 'sinistro@administradoramutual.com.br',
-        password: 'senha123',
+        password: '1234567890',
         name: 'Sinistro',
         level: 'Master'
     },
     {
         email: 'adm@administradoramutual.com.br',
-        password: 'senha123',
+        password: '1234567890',
         name: 'Administrativo',
         level: 'Master'
     }
@@ -188,4 +188,3 @@ const authManager = new AuthManager();
 
 // Expõe para uso global
 window.authManager = authManager;
-

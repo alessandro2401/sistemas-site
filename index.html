@@ -381,32 +381,30 @@
         </div>
     </div>
 
+    <script src="auth.js"></script>
     <script>
         lucide.createIcons();
 
-        // Verificar autenticação
-        document.addEventListener('DOMContentLoaded', function() {
-            const token = localStorage.getItem('authToken');
-            const userStr = localStorage.getItem('user');
-            
-            if (token && userStr) {
-                try {
-                    const user = JSON.parse(userStr);
+        // Proteger página - redireciona para login se não autenticado
+        if (!authManager.protectPage()) {
+            // Página será redirecionada, não executa mais nada
+        } else {
+            // Usuário autenticado - exibir barra de usuário
+            document.addEventListener('DOMContentLoaded', function() {
+                const user = authManager.getCurrentUser();
+                if (user) {
                     document.getElementById('userName').textContent = user.name;
                     document.getElementById('userEmail').textContent = user.email;
                     document.getElementById('userBar').style.display = 'flex';
-                } catch (e) {
-                    console.error('Erro ao processar dados do usuário', e);
                 }
-            }
 
-            // Logout
-            document.getElementById('btnLogout').addEventListener('click', function() {
-                localStorage.removeItem('authToken');
-                localStorage.removeItem('user');
-                window.location.href = 'login.html';
+                // Logout
+                document.getElementById('btnLogout').addEventListener('click', function() {
+                    authManager.logout();
+                    window.location.href = 'login.html';
+                });
             });
-        });
+        }
     </script>
 </body>
 </html>
