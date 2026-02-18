@@ -34,6 +34,12 @@ const MASTER_USERS = [
         password: '1234567890',
         name: 'Administrativo',
         level: 'Master'
+    },
+    {
+        email: 'alpha@administradoramutual.com.br',
+        password: '1234567890',
+        name: 'Alpha',
+        level: 'Master'
     }
 ];
 
