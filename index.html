@@ -1,16 +1,6 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<!-- no-manus-badge -->
-<style>
-/* Bloqueia o badge "Made with Manus" */
-[data-manus],[id*="manus-badge"],[id*="manus-widget"],[class*="manus-badge"],[class*="manus-widget"],[class*="manus-branding"],a[href*="manus.im"],a[href*="manus.space"]{display:none!important;visibility:hidden!important;opacity:0!important;pointer-events:none!important;width:0!important;height:0!important;overflow:hidden!important;position:absolute!important;left:-9999px!important;}
-</style>
-<script>
-/* Bloqueia o badge "Made with Manus" */
-(function(){var s=['[data-manus]','[id*="manus-badge"]','[id*="manus-widget"]','[class*="manus-badge"]','[class*="manus-widget"]','[class*="manus-branding"]','a[href*="manus.im"]','a[href*="manus.space"]'];function r(){s.forEach(function(q){try{document.querySelectorAll(q).forEach(function(e){e.remove()});}catch(e){}});document.querySelectorAll('*').forEach(function(e){try{if(!e.children.length&&e.textContent&&e.textContent.trim().toLowerCase().includes('made with manus')){var p=e.closest('[style*="position: fixed"],[style*="position:fixed"],[style*="z-index"]')||e.parentElement;if(p&&p!==document.body)p.remove();else e.remove();}}catch(e){}});}if(window.MutationObserver){var o=new MutationObserver(function(m){m.forEach(function(x){if(x.addedNodes.length)r();});});o.observe(document.documentElement,{childList:true,subtree:true});}var c=0,i=setInterval(function(){r();if(++c>=20)clearInterval(i);},500);if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',r);}else{r();}window.addEventListener('load',function(){setTimeout(r,200);setTimeout(r,1000);setTimeout(r,3000);});})();
-</script>
-
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Portais e Sistemas - Administradora Mutual</title>
@@ -18,311 +8,56 @@
     <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
     <link rel="icon" type="image/png" sizes="192x192" href="favicon-192.png">
     <link rel="icon" type="image/png" sizes="512x512" href="favicon-512.png">
-    <script src="https://unpkg.com/lucide@latest"></script>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+    <script>
+    /* Bloqueia o badge "Made with Manus" — versão segura, sem remover CSS/scripts */
+    (function() {
+        var MANUS_SELECTORS = [
+            '[data-manus]',
+            '[id*="manus-badge"]',
+            '[id*="manus-widget"]',
+            '[class*="manus-badge"]',
+            '[class*="manus-widget"]',
+            '[class*="manus-branding"]',
+            'a[href*="manus.im"]',
+            'a[href*="manus.space"]'
+        ];
+
+        function removeManusBadge() {
+            MANUS_SELECTORS.forEach(function(selector) {
+                try {
+                    document.querySelectorAll(selector).forEach(function(el) {
+                        // Nunca remover style, script, link, head, body, html
+                        var tag = el.tagName ? el.tagName.toLowerCase() : '';
+                        if (['style','script','link','head','body','html','meta'].indexOf(tag) === -1) {
+                            el.remove();
+                        }
+                    });
+                } catch(e) {}
+            });
         }
 
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            padding: 40px 20px;
+        if (window.MutationObserver) {
+            var observer = new MutationObserver(function(mutations) {
+                mutations.forEach(function(m) {
+                    if (m.addedNodes.length) removeManusBadge();
+                });
+            });
+            observer.observe(document.documentElement, { childList: true, subtree: true });
         }
 
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', removeManusBadge);
+        } else {
+            removeManusBadge();
         }
-
-        .header {
-            text-align: center;
-            color: white;
-            margin-bottom: 50px;
-        }
-
-        .header h1 {
-            font-size: 2.5rem;
-            margin-bottom: 10px;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
-        }
-
-        .header p {
-            font-size: 1.1rem;
-            opacity: 0.9;
-        }
-
-        .systems-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-            gap: 25px;
-            margin-bottom: 40px;
-        }
-
-        .system-card {
-            background: white;
-            border-radius: 12px;
-            padding: 30px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-            transition: all 0.3s ease;
-            cursor: pointer;
-            text-decoration: none;
-            color: inherit;
-            display: block;
-        }
-
-        .system-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 15px 40px rgba(0,0,0,0.3);
-        }
-
-        .system-card .icon {
-            width: 3rem;
-            height: 3rem;
-            margin-bottom: 15px;
-            display: block;
-            color: #667eea;
-            stroke-width: 2;
-        }
-
-        .system-card h3 {
-            color: #667eea;
-            font-size: 1.4rem;
-            margin-bottom: 10px;
-        }
-
-        .system-card p {
-            color: #666;
-            font-size: 0.95rem;
-            line-height: 1.5;
-        }
-
-        .system-card .url {
-            color: #999;
-            font-size: 0.85rem;
-            margin-top: 10px;
-            display: block;
-            font-family: monospace;
-        }
-
-        .restricted {
-            background: linear-gradient(135deg, #ffeaa7 0%, #fdcb6e 100%);
-            border: 2px solid #f39c12;
-        }
-
-        .restricted .icon-lock {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            width: 1.5rem;
-            height: 1.5rem;
-            color: #f39c12;
-        }
-        
-        .restricted {
-            position: relative;
-        }
-
-        /* === CARD DESTAQUE === */
-        .featured-card {
-            grid-column: 1 / -1;
-            background: linear-gradient(135deg, #0a1628 0%, #1a2d50 50%, #0d3b66 100%);
-            border: 2px solid #3b82f6;
-            border-radius: 16px;
-            padding: 40px;
-            box-shadow: 0 10px 40px rgba(59, 130, 246, 0.3), 0 0 60px rgba(59, 130, 246, 0.1);
-            cursor: pointer;
-            text-decoration: none;
-            color: inherit;
-            display: flex;
-            align-items: center;
-            gap: 40px;
-            transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .featured-card::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            right: -20%;
-            width: 400px;
-            height: 400px;
-            background: radial-gradient(circle, rgba(59, 130, 246, 0.15) 0%, transparent 70%);
-            pointer-events: none;
-        }
-
-        .featured-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 15px 50px rgba(59, 130, 246, 0.4), 0 0 80px rgba(59, 130, 246, 0.15);
-            border-color: #60a5fa;
-        }
-
-        .featured-card .featured-icon-area {
-            flex-shrink: 0;
-            width: 80px;
-            height: 80px;
-            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
-            border-radius: 16px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            box-shadow: 0 4px 20px rgba(59, 130, 246, 0.4);
-        }
-
-        .featured-card .featured-icon-area i {
-            width: 40px;
-            height: 40px;
-            color: white;
-            stroke-width: 2;
-        }
-
-        .featured-card .featured-content {
-            flex: 1;
-            position: relative;
-            z-index: 1;
-        }
-
-        .featured-card .featured-badge {
-            display: inline-block;
-            background: linear-gradient(135deg, #3b82f6, #2563eb);
-            color: white;
-            font-size: 0.7rem;
-            font-weight: 700;
-            padding: 4px 12px;
-            border-radius: 20px;
-            letter-spacing: 1px;
-            text-transform: uppercase;
-            margin-bottom: 12px;
-        }
-
-        .featured-card h3 {
-            color: white;
-            font-size: 1.6rem;
-            margin-bottom: 8px;
-            font-weight: 700;
-        }
-
-        .featured-card p {
-            color: rgba(255, 255, 255, 0.75);
-            font-size: 1rem;
-            line-height: 1.6;
-        }
-
-        .featured-card .url {
-            color: rgba(255, 255, 255, 0.45);
-            font-size: 0.85rem;
-            margin-top: 12px;
-            display: block;
-            font-family: monospace;
-        }
-
-        .featured-card .featured-arrow {
-            flex-shrink: 0;
-            width: 40px;
-            height: 40px;
-            color: rgba(255, 255, 255, 0.4);
-            transition: all 0.3s ease;
-            position: relative;
-            z-index: 1;
-        }
-
-        .featured-card:hover .featured-arrow {
-            color: #60a5fa;
-            transform: translateX(5px);
-        }
-
-        @media (max-width: 768px) {
-            .featured-card {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 20px;
-                padding: 30px;
-            }
-
-            .featured-card .featured-arrow {
-                display: none;
-            }
-
-            .featured-card h3 {
-                font-size: 1.3rem;
-            }
-        }
-        /* === FIM CARD DESTAQUE === */
-
-        .footer {
-            text-align: center;
-            color: white;
-            margin-top: 50px;
-            opacity: 0.8;
-        }
-
-        .user-bar {
-            position: fixed;
-            top: 0;
-            right: 0;
-            background: rgba(255, 255, 255, 0.95);
-            padding: 12px 20px;
-            border-radius: 0 0 0 12px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            z-index: 1000;
-        }
-
-        .user-bar .user-info {
-            display: flex;
-            flex-direction: column;
-            align-items: flex-end;
-        }
-
-        .user-bar .user-name {
-            font-weight: 600;
-            color: #667eea;
-            font-size: 0.9rem;
-        }
-
-        .user-bar .user-email {
-            font-size: 0.75rem;
-            color: #666;
-        }
-
-        .user-bar .btn-logout {
-            background: #667eea;
-            color: white;
-            border: none;
-            padding: 8px 16px;
-            border-radius: 6px;
-            cursor: pointer;
-            font-size: 0.85rem;
-            font-weight: 600;
-            transition: all 0.3s ease;
-        }
-
-        .user-bar .btn-logout:hover {
-            background: #764ba2;
-            transform: translateY(-1px);
-        }
-
-        .container {
-            padding-top: 20px;
-        }
-
-        @media (max-width: 768px) {
-            .header h1 {
-                font-size: 2rem;
-            }
-            
-            .systems-grid {
-                grid-template-columns: 1fr;
-            }
-        }
-    </style>
+        window.addEventListener('load', function() {
+            setTimeout(removeManusBadge, 500);
+            setTimeout(removeManusBadge, 2000);
+        });
+    })();
+    </script>
 </head>
 <body>
     <!-- Barra de usuário -->
@@ -333,13 +68,18 @@
         </div>
         <button class="btn-logout" id="btnLogout">Sair</button>
     </div>
+
     <div class="container">
         <div class="header">
-            <h1><i data-lucide="briefcase" style="display: inline-block; width: 2.5rem; height: 2.5rem; vertical-align: middle; margin-right: 10px;"></i>Portais e Sistemas</h1>
+            <h1>
+                <i data-lucide="briefcase" style="display:inline-block;width:2.5rem;height:2.5rem;vertical-align:middle;margin-right:10px;"></i>
+                Portais e Sistemas
+            </h1>
             <p>Acesso centralizado aos sistemas internos da Administradora Mutual</p>
         </div>
 
         <div class="systems-grid">
+
             <!-- === CARD DESTAQUE - DASHBOARD ORÇAMENTÁRIO 2026 === -->
             <a href="https://grupommb2026.manus.space/estrutura" class="featured-card" target="_blank">
                 <div class="featured-icon-area">
@@ -390,7 +130,7 @@
 
             <!-- Due Diligence -->
             <a href="https://formulario.administradoramutual.com.br" class="system-card" target="_blank">
-                <i data-lucide="file-text" class="icon"></i>
+                <i data-lucide="clipboard-check" class="icon"></i>
                 <h3>Due Diligence</h3>
                 <p>Formulário de análise de viabilidade de carteira</p>
                 <span class="url">formulario.administradoramutual.com.br</span>
@@ -428,7 +168,7 @@
                 <span class="url">prompts.administradoramutual.com.br</span>
             </a>
 
-            <!-- Documentação (Docs) -->
+            <!-- Documentação -->
             <a href="https://docs.administradoramutual.com.br" class="system-card" target="_blank">
                 <i data-lucide="book-open" class="icon"></i>
                 <h3>Documentação</h3>
@@ -500,7 +240,7 @@
                 <span class="url">locadora.administradoramutual.com.br</span>
             </a>
 
-            <!-- Sites (Restrito) -->
+            <!-- Gestão de Sites -->
             <a href="https://sites.administradoramutual.com.br" class="system-card restricted" target="_blank">
                 <i data-lucide="lock" class="icon-lock"></i>
                 <i data-lucide="globe" class="icon"></i>
@@ -509,7 +249,7 @@
                 <span class="url">sites.administradoramutual.com.br</span>
             </a>
 
-            <!-- SOU (Restrito) -->
+            <!-- SOU -->
             <a href="https://sou.administradoramutual.com.br" class="system-card restricted" target="_blank">
                 <i data-lucide="lock" class="icon-lock"></i>
                 <i data-lucide="users" class="icon"></i>
@@ -518,14 +258,15 @@
                 <span class="url">sou.administradoramutual.com.br</span>
             </a>
 
-            <!-- 360 (Em breve) -->
-            <div class="system-card restricted" style="opacity:0.6; cursor:not-allowed;" title="Em breve">
+            <!-- Visão 360º (Em breve) -->
+            <div class="system-card restricted" style="opacity:0.6;cursor:not-allowed;" title="Em breve">
                 <i data-lucide="lock" class="icon-lock"></i>
                 <i data-lucide="pie-chart" class="icon"></i>
                 <h3>Visão 360º <span style="font-size:0.7rem;background:#f39c12;color:white;padding:2px 8px;border-radius:10px;margin-left:8px;vertical-align:middle;">Em breve</span></h3>
                 <p>Dashboard executivo com visão 360 graus da operação</p>
                 <span class="url">360.administradoramutual.com.br</span>
             </div>
+
         </div>
 
         <div class="footer">
@@ -535,22 +276,21 @@
 
     <script src="auth.js"></script>
     <script>
+        // Renderizar ícones Lucide
         lucide.createIcons();
 
-        // Proteger página - redireciona para login se não autenticado
+        // Proteger página — redireciona para login se não autenticado
         if (!authManager.protectPage()) {
-            // Página será redirecionada, não executa mais nada
+            // Será redirecionado
         } else {
-            // Usuário autenticado - exibir barra de usuário
             document.addEventListener('DOMContentLoaded', function() {
-                const user = authManager.getCurrentUser();
+                var user = authManager.getCurrentUser();
                 if (user) {
                     document.getElementById('userName').textContent = user.name;
                     document.getElementById('userEmail').textContent = user.email;
                     document.getElementById('userBar').style.display = 'flex';
                 }
 
-                // Logout
                 document.getElementById('btnLogout').addEventListener('click', function() {
                     authManager.logout();
                     window.location.href = 'login.html';

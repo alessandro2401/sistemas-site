@@ -1,16 +1,6 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<!-- no-manus-badge -->
-<style>
-/* Bloqueia o badge "Made with Manus" */
-[data-manus],[id*="manus-badge"],[id*="manus-widget"],[class*="manus-badge"],[class*="manus-widget"],[class*="manus-branding"],a[href*="manus.im"],a[href*="manus.space"]{display:none!important;visibility:hidden!important;opacity:0!important;pointer-events:none!important;width:0!important;height:0!important;overflow:hidden!important;position:absolute!important;left:-9999px!important;}
-</style>
-<script>
-/* Bloqueia o badge "Made with Manus" */
-(function(){var s=['[data-manus]','[id*="manus-badge"]','[id*="manus-widget"]','[class*="manus-badge"]','[class*="manus-widget"]','[class*="manus-branding"]','a[href*="manus.im"]','a[href*="manus.space"]'];function r(){s.forEach(function(q){try{document.querySelectorAll(q).forEach(function(e){e.remove()});}catch(e){}});document.querySelectorAll('*').forEach(function(e){try{if(!e.children.length&&e.textContent&&e.textContent.trim().toLowerCase().includes('made with manus')){var p=e.closest('[style*="position: fixed"],[style*="position:fixed"],[style*="z-index"]')||e.parentElement;if(p&&p!==document.body)p.remove();else e.remove();}}catch(e){}});}if(window.MutationObserver){var o=new MutationObserver(function(m){m.forEach(function(x){if(x.addedNodes.length)r();});});o.observe(document.documentElement,{childList:true,subtree:true});}var c=0,i=setInterval(function(){r();if(++c>=20)clearInterval(i);},500);if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',r);}else{r();}window.addEventListener('load',function(){setTimeout(r,200);setTimeout(r,1000);setTimeout(r,3000);});})();
-</script>
-
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login - Portais e Sistemas</title>
@@ -18,12 +8,47 @@
     <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
     <link rel="icon" type="image/png" sizes="192x192" href="favicon-192.png">
     <link rel="icon" type="image/png" sizes="512x512" href="favicon-512.png">
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
+    <script>
+    /* Bloqueia o badge "Made with Manus" — versão segura */
+    (function() {
+        var MANUS_SELECTORS = [
+            '[data-manus]',
+            '[id*="manus-badge"]',
+            '[id*="manus-widget"]',
+            '[class*="manus-badge"]',
+            '[class*="manus-widget"]',
+            '[class*="manus-branding"]',
+            'a[href*="manus.im"]',
+            'a[href*="manus.space"]'
+        ];
+        function removeManusBadge() {
+            MANUS_SELECTORS.forEach(function(selector) {
+                try {
+                    document.querySelectorAll(selector).forEach(function(el) {
+                        var tag = el.tagName ? el.tagName.toLowerCase() : '';
+                        if (['style','script','link','head','body','html','meta'].indexOf(tag) === -1) {
+                            el.remove();
+                        }
+                    });
+                } catch(e) {}
+            });
         }
+        if (window.MutationObserver) {
+            new MutationObserver(function(m) {
+                m.forEach(function(x) { if (x.addedNodes.length) removeManusBadge(); });
+            }).observe(document.documentElement, { childList: true, subtree: true });
+        }
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', removeManusBadge);
+        } else { removeManusBadge(); }
+        window.addEventListener('load', function() {
+            setTimeout(removeManusBadge, 500);
+            setTimeout(removeManusBadge, 2000);
+        });
+    })();
+    </script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
 
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -46,162 +71,50 @@
         }
 
         @keyframes slideIn {
-            from {
-                opacity: 0;
-                transform: translateY(-20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+            from { opacity: 0; transform: translateY(-20px); }
+            to   { opacity: 1; transform: translateY(0); }
         }
 
-        .login-header {
-            text-align: center;
-            margin-bottom: 35px;
-        }
+        .login-header { text-align: center; margin-bottom: 35px; }
+        .login-header .icon { font-size: 4rem; margin-bottom: 15px; display: block; }
+        .login-header h1 { color: #667eea; font-size: 1.8rem; margin-bottom: 8px; }
+        .login-header p  { color: #666; font-size: 0.95rem; }
 
-        .login-header .icon {
-            font-size: 4rem;
-            margin-bottom: 15px;
-            display: block;
-        }
-
-        .login-header h1 {
-            color: #667eea;
-            font-size: 1.8rem;
-            margin-bottom: 8px;
-        }
-
-        .login-header p {
-            color: #666;
-            font-size: 0.95rem;
-        }
-
-        .form-group {
-            margin-bottom: 24px;
-        }
-
-        .form-group label {
-            display: block;
-            color: #333;
-            font-weight: 600;
-            margin-bottom: 8px;
-            font-size: 0.9rem;
-        }
-
+        .form-group { margin-bottom: 24px; }
+        .form-group label { display: block; color: #333; font-weight: 600; margin-bottom: 8px; font-size: 0.9rem; }
         .form-group input {
-            width: 100%;
-            padding: 14px 16px;
-            border: 2px solid #e0e0e0;
-            border-radius: 8px;
-            font-size: 1rem;
-            transition: all 0.3s ease;
-            font-family: inherit;
+            width: 100%; padding: 14px 16px; border: 2px solid #e0e0e0;
+            border-radius: 8px; font-size: 1rem; transition: all 0.3s ease; font-family: inherit;
         }
-
-        .form-group input:focus {
-            outline: none;
-            border-color: #667eea;
-            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
-        }
-
-        .form-group input::placeholder {
-            color: #999;
-        }
+        .form-group input:focus { outline: none; border-color: #667eea; box-shadow: 0 0 0 3px rgba(102,126,234,0.1); }
+        .form-group input::placeholder { color: #999; }
 
         .btn-login {
-            width: 100%;
-            padding: 14px;
+            width: 100%; padding: 14px;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            border: none;
-            border-radius: 8px;
-            font-size: 1.05rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            margin-top: 10px;
+            color: white; border: none; border-radius: 8px;
+            font-size: 1.05rem; font-weight: 600; cursor: pointer;
+            transition: all 0.3s ease; margin-top: 10px;
         }
-
-        .btn-login:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
-        }
-
-        .btn-login:active {
-            transform: translateY(0);
-        }
-
-        .btn-login:disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
-            transform: none;
-        }
+        .btn-login:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(102,126,234,0.4); }
+        .btn-login:active { transform: translateY(0); }
+        .btn-login:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
 
         .alert {
-            padding: 12px 16px;
-            border-radius: 8px;
-            margin-bottom: 20px;
-            font-size: 0.9rem;
-            display: none;
-            animation: fadeIn 0.3s ease;
+            padding: 12px 16px; border-radius: 8px; margin-bottom: 20px;
+            font-size: 0.9rem; display: none; animation: fadeIn 0.3s ease;
         }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        .alert.show { display: block; }
+        .alert-error   { background: #fee; color: #c33; border: 1px solid #fcc; }
+        .alert-success { background: #efe; color: #3c3; border: 1px solid #cfc; }
 
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-
-        .alert.show {
-            display: block;
-        }
-
-        .alert-error {
-            background: #fee;
-            color: #c33;
-            border: 1px solid #fcc;
-        }
-
-        .alert-success {
-            background: #efe;
-            color: #3c3;
-            border: 1px solid #cfc;
-        }
-
-        .footer-text {
-            text-align: center;
-            margin-top: 25px;
-            color: #999;
-            font-size: 0.85rem;
-        }
-
-        .user-info {
-            background: #f8f9fa;
-            padding: 12px;
-            border-radius: 8px;
-            margin-top: 20px;
-            font-size: 0.85rem;
-            color: #666;
-            border-left: 4px solid #667eea;
-        }
-
-        .user-info strong {
-            color: #333;
-        }
+        .footer-text { text-align: center; margin-top: 25px; color: #999; font-size: 0.85rem; }
 
         @media (max-width: 480px) {
-            .login-container {
-                padding: 30px 25px;
-            }
-
-            .login-header h1 {
-                font-size: 1.5rem;
-            }
-
-            .login-header .icon {
-                font-size: 3rem;
-            }
+            .login-container { padding: 30px 25px; }
+            .login-header h1 { font-size: 1.5rem; }
+            .login-header .icon { font-size: 3rem; }
         }
     </style>
 </head>
@@ -218,109 +131,73 @@
         <form id="loginForm">
             <div class="form-group">
                 <label for="email">Email corporativo</label>
-                <input 
-                    type="email" 
-                    id="email" 
-                    name="email" 
+                <input type="email" id="email" name="email"
                     placeholder="seu.email@administradoramutual.com.br"
-                    required
-                    autocomplete="email"
-                >
+                    required autocomplete="email">
             </div>
-
             <div class="form-group">
                 <label for="password">Senha</label>
-                <input 
-                    type="password" 
-                    id="password" 
-                    name="password" 
+                <input type="password" id="password" name="password"
                     placeholder="Digite sua senha"
-                    required
-                    autocomplete="current-password"
-                >
+                    required autocomplete="current-password">
             </div>
-
-            <button type="submit" class="btn-login" id="btnLogin">
-                Entrar
-            </button>
+            <button type="submit" class="btn-login" id="btnLogin">Entrar</button>
         </form>
 
         <div class="footer-text">
-            © 2025 Administradora Mutual
+            &copy; 2025 Administradora Mutual
         </div>
     </div>
 
     <script src="auth.js"></script>
     <script>
-        // Elementos do DOM
-        const loginForm = document.getElementById('loginForm');
-        const emailInput = document.getElementById('email');
-        const passwordInput = document.getElementById('password');
-        const btnLogin = document.getElementById('btnLogin');
-        const alertBox = document.getElementById('alertBox');
+        var loginForm   = document.getElementById('loginForm');
+        var emailInput  = document.getElementById('email');
+        var passwordInput = document.getElementById('password');
+        var btnLogin    = document.getElementById('btnLogin');
+        var alertBox    = document.getElementById('alertBox');
 
-        // Se já estiver autenticado, redireciona
+        // Se já autenticado, redireciona
         if (authManager.isAuthenticated()) {
             authManager.redirectAfterLogin();
         }
 
-        /**
-         * Mostra alerta
-         */
-        function showAlert(message, type = 'error') {
+        function showAlert(message, type) {
+            type = type || 'error';
             alertBox.textContent = message;
-            alertBox.className = `alert alert-${type} show`;
-            
-            // Remove alerta após 5 segundos
-            setTimeout(() => {
-                alertBox.classList.remove('show');
-            }, 5000);
+            alertBox.className = 'alert alert-' + type + ' show';
+            setTimeout(function() { alertBox.classList.remove('show'); }, 5000);
         }
 
-        /**
-         * Handler do formulário de login
-         */
-        loginForm.addEventListener('submit', async (e) => {
+        loginForm.addEventListener('submit', function(e) {
             e.preventDefault();
+            var email    = emailInput.value.trim();
+            var password = passwordInput.value;
 
-            const email = emailInput.value.trim();
-            const password = passwordInput.value;
-
-            // Validação básica
             if (!email || !password) {
                 showAlert('Por favor, preencha todos os campos.', 'error');
                 return;
             }
 
-            // Desabilita botão durante processamento
             btnLogin.disabled = true;
             btnLogin.textContent = 'Entrando...';
 
-            // Simula delay de rede (opcional, para melhor UX)
-            await new Promise(resolve => setTimeout(resolve, 500));
-
-            // Tenta fazer login
-            const result = authManager.login(email, password);
-
-            if (result.success) {
-                showAlert(result.message, 'success');
-                
-                // Aguarda um momento e redireciona
-                setTimeout(() => {
-                    authManager.redirectAfterLogin();
-                }, 1000);
-            } else {
-                showAlert(result.message, 'error');
-                btnLogin.disabled = false;
-                btnLogin.textContent = 'Entrar';
-                passwordInput.value = '';
-                passwordInput.focus();
-            }
+            setTimeout(function() {
+                var result = authManager.login(email, password);
+                if (result.success) {
+                    showAlert(result.message, 'success');
+                    setTimeout(function() { authManager.redirectAfterLogin(); }, 1000);
+                } else {
+                    showAlert(result.message, 'error');
+                    btnLogin.disabled = false;
+                    btnLogin.textContent = 'Entrar';
+                    passwordInput.value = '';
+                    passwordInput.focus();
+                }
+            }, 500);
         });
 
-        // Auto-focus no campo de email
         emailInput.focus();
     </script>
 </body>
 </html>
-
