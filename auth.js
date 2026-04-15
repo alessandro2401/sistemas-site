@@ -1,186 +1,108 @@
 /**
- * Sistema de Autenticação - Sistemas Administradora Mutual
- * Biblioteca de autenticação com localStorage para site HTML estático
+ * Sistema de Autenticação - Administradora Mutual
+ * Acesso restrito aos usuários autorizados.
  */
-
-// Usuários master do sistema
-const MASTER_USERS = [
+const AUTHORIZED_USERS = [
     {
-        email: 'presidencia@administradoramutual.com.br',
-        password: '1234567890',
-        name: 'Presidência',
-        level: 'Master'
+        email: 'alessandro@pizzolatto.com.br',
+        password: 'Mmb@2026br$',
+        name: 'Alessandro Pizzolatto'
     },
     {
-        email: 'diretoria@administradoramutual.com.br',
-        password: '1234567890',
-        name: 'Diretoria',
-        level: 'Master'
+        email: 'junio.tosta@alphanacional.com.br',
+        password: 'Mmb@2026br$',
+        name: 'Junio Tosta'
     },
     {
-        email: 'comercial@administradoramutual.com.br',
-        password: '1234567890',
-        name: 'Comercial',
-        level: 'Master'
-    },
-    {
-        email: 'sinistro@administradoramutual.com.br',
-        password: '1234567890',
-        name: 'Sinistro',
-        level: 'Master'
-    },
-    {
-        email: 'adm@administradoramutual.com.br',
-        password: '1234567890',
-        name: 'Administrativo',
-        level: 'Master'
-    },
-    {
-        email: 'alpha@administradoramutual.com.br',
-        password: '1234567890',
-        name: 'Alpha',
-        level: 'Master'
+        email: 'adriele.roque@grupommb.com',
+        password: 'Mmb@2026br$',
+        name: 'Adriele Roque'
     }
 ];
 
-// Chave para armazenamento no localStorage
-const STORAGE_KEY = 'sistemas_auth_session';
+const STORAGE_KEY = 'mutual_auth_session';
 
-/**
- * Classe de gerenciamento de autenticação
- */
 class AuthManager {
     constructor() {
         this.currentUser = null;
         this.loadSession();
     }
 
-    /**
-     * Carrega sessão do localStorage
-     */
     loadSession() {
         try {
-            const sessionData = localStorage.getItem(STORAGE_KEY);
+            const sessionData = sessionStorage.getItem(STORAGE_KEY);
             if (sessionData) {
                 const session = JSON.parse(sessionData);
-                
-                // Verifica se a sessão ainda é válida (24 horas)
-                const now = new Date().getTime();
-                const sessionTime = new Date(session.timestamp).getTime();
-                const hoursDiff = (now - sessionTime) / (1000 * 60 * 60);
-                
-                if (hoursDiff < 24) {
-                    this.currentUser = session.user;
-                    return true;
-                } else {
-                    // Sessão expirada
-                    this.logout();
-                    return false;
+                if (session && session.user && session.user.email) {
+                    const isAuthorized = AUTHORIZED_USERS.some(
+                        u => u.email.toLowerCase() === session.user.email.toLowerCase()
+                    );
+                    if (isAuthorized) {
+                        this.currentUser = session.user;
+                        return true;
+                    }
                 }
             }
             return false;
         } catch (error) {
-            console.error('Erro ao carregar sessão:', error);
             return false;
         }
     }
 
-    /**
-     * Salva sessão no localStorage
-     */
     saveSession(user) {
         try {
-            const session = {
-                user: user,
-                timestamp: new Date().toISOString()
-            };
-            localStorage.setItem(STORAGE_KEY, JSON.stringify(session));
+            const session = { user: user, timestamp: new Date().toISOString() };
+            sessionStorage.setItem(STORAGE_KEY, JSON.stringify(session));
             this.currentUser = user;
             return true;
         } catch (error) {
-            console.error('Erro ao salvar sessão:', error);
             return false;
         }
     }
 
-    /**
-     * Realiza login
-     * @param {string} email - Email do usuário
-     * @param {string} password - Senha do usuário
-     * @returns {Object} Resultado do login
-     */
     login(email, password) {
-        // Busca usuário
-        const user = MASTER_USERS.find(u => 
-            u.email.toLowerCase() === email.toLowerCase() && 
+        const user = AUTHORIZED_USERS.find(u =>
+            u.email.toLowerCase() === email.toLowerCase() &&
             u.password === password
         );
-
         if (user) {
-            // Remove senha antes de salvar
-            const userToSave = {
-                email: user.email,
-                name: user.name,
-                level: user.level
-            };
-            
+            const userToSave = { email: user.email, name: user.name };
             this.saveSession(userToSave);
-            
-            return {
-                success: true,
-                user: userToSave,
-                message: 'Login realizado com sucesso!'
-            };
+            return { success: true, user: userToSave };
         } else {
-            return {
-                success: false,
-                message: 'Email ou senha incorretos.'
-            };
+            return { success: false, message: 'E-mail ou senha incorretos.' };
         }
     }
 
-    /**
-     * Realiza logout
-     */
     logout() {
-        localStorage.removeItem(STORAGE_KEY);
+        sessionStorage.removeItem(STORAGE_KEY);
         this.currentUser = null;
     }
 
-    /**
-     * Verifica se está autenticado
-     */
     isAuthenticated() {
         return this.currentUser !== null;
     }
 
-    /**
-     * Obtém usuário atual
-     */
     getCurrentUser() {
         return this.currentUser;
     }
 
-    /**
-     * Protege página - redireciona para login se não autenticado
-     */
     protectPage() {
         if (!this.isAuthenticated()) {
-            // Salva URL atual para redirecionar após login
+            // Determina o caminho correto para login.html
+            const currentPath = window.location.pathname;
+            const depth = (currentPath.match(/\//g) || []).length - 1;
+            const prefix = depth > 0 ? '../'.repeat(depth) : '';
             sessionStorage.setItem('redirect_after_login', window.location.href);
-            window.location.href = 'login.html';
+            window.location.href = prefix + 'login.html';
             return false;
         }
         return true;
     }
 
-    /**
-     * Redireciona após login bem-sucedido
-     */
     redirectAfterLogin() {
         const redirectUrl = sessionStorage.getItem('redirect_after_login');
         sessionStorage.removeItem('redirect_after_login');
-        
         if (redirectUrl && redirectUrl.includes(window.location.hostname)) {
             window.location.href = redirectUrl;
         } else {
@@ -189,8 +111,5 @@ class AuthManager {
     }
 }
 
-// Instância global do gerenciador de autenticação
 const authManager = new AuthManager();
-
-// Expõe para uso global
 window.authManager = authManager;
