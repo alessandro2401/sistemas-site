@@ -1,0 +1,9 @@
+# Local production credentials — never commit
+.production-secrets
+
+# Local audit outputs and deployment inspection artifacts
+audit-exposure-current/
+systems-deploy-check.txt
+
+# Local secret generator
+scripts/generate-secrets.cjs

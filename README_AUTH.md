@@ -1,155 +1,58 @@
-# Sistema de Autenticação - Portais e Sistemas
+# Autenticação do Portal de Sistemas
 
-## Visão Geral
+## Visão geral
 
-Sistema de autenticação implementado para o site **sistemas.administradoramutual.com.br** com proteção de acesso via login.
+O portal `sistemas.administradoramutual.com.br` utiliza autenticação server-side. O navegador apresenta o formulário e chama os endpoints internos de autenticação; a validação de credenciais ocorre exclusivamente no runtime serverless da Vercel.
 
-## Características
+Nenhuma senha, hash de senha, segredo de sessão ou lista de usuários deve ser incluída neste repositório, em HTML, JavaScript público, sourcemaps, documentação ou mensagens de erro. Os valores administrativos são configurados somente como variáveis sensíveis no ambiente **Production** da Vercel.
 
-- ✅ **Autenticação via localStorage** - Sessão persistente no navegador
-- ✅ **5 usuários master configurados** - Todos com nível de acesso Master
-- ✅ **Proteção automática de páginas** - Redirecionamento para login se não autenticado
-- ✅ **Sessão com expiração** - 24 horas de validade
-- ✅ **Interface responsiva** - Design adaptável para mobile e desktop
-- ✅ **Barra de usuário** - Mostra nome, email e botão de logout
-- ✅ **Conteúdo original preservado** - Nenhuma alteração no conteúdo do site
+## Fluxo atual
 
-## Arquivos Adicionados
+Quando uma página protegida é aberta, `auth.js` chama `GET /api/auth/me` com `credentials: include`. Sem uma sessão válida, o usuário é encaminhado para `login.html`. O controlador `login.js` envia o e-mail e a senha digitados via `POST /api/auth/login` usando HTTPS e não grava esses valores em `localStorage` ou `sessionStorage`. Em caso de sucesso, o backend emite um cookie de sessão protegido e retorna somente o perfil mínimo necessário à interface.
 
-### 1. `auth.js` (180 linhas)
-Biblioteca de gerenciamento de autenticação com:
-- Classe `AuthManager` para controle de sessão
-- Validação de credenciais
-- Armazenamento seguro no localStorage
-- Controle de expiração de sessão (24h)
-- Métodos de login, logout e proteção de página
+O logout chama `POST /api/auth/logout`, remove a sessão no cliente por meio do cookie expirado e limpa o estado de usuário mantido em memória. A API responde com mensagens genéricas em falhas de autenticação para não revelar se um e-mail está cadastrado.
 
-### 2. `login.html` (235 linhas)
-Página de login com:
-- Formulário responsivo e elegante
-- Validação de campos
-- Feedback visual de erros/sucesso
-- Auto-focus e experiência otimizada
-- Design consistente com identidade visual
+## Componentes
 
-### 3. `index.html` (modificado)
-Adicionado ao arquivo original:
-- Script de proteção de autenticação
-- Barra de usuário no topo direito
-- Estilos CSS para barra de usuário
-- Handler de logout
-- Links para favicons
+| Componente | Responsabilidade |
+|---|---|
+| `api/_auth.cjs` | Lê configuração server-side, deriva e compara hashes scrypt, aplica rate limiting local e assina/verifica sessões. |
+| `api/auth/login.js` | Recebe credenciais, valida o usuário no backend e emite cookie `HttpOnly`. |
+| `api/auth/me.js` | Retorna apenas o estado autenticado e o perfil mínimo da sessão. |
+| `api/auth/logout.js` | Expira a sessão e retorna resposta sem dados sensíveis. |
+| `auth.js` | Cliente mínimo para chamar a API e proteger páginas. Não contém credenciais. |
+| `login.js` | Controla o formulário sem persistir senha ou hash no navegador. |
+| `portal.js` | Valida a sessão antes de mostrar o conteúdo protegido e executa logout. |
+| `vercel.json` | Define funções serverless, rewrites, headers e políticas de cache. |
 
-## Usuários Master Configurados
+## Variáveis de ambiente
 
-Todos os usuários têm **nível de acesso Master** e senha **senha123**:
+As seguintes variáveis existem apenas no ambiente sensível da Vercel. Os valores não devem ser impressos em logs, commits, tickets, relatórios ou arquivos locais persistentes:
 
-| Email | Nome | Nível |
-|-------|------|-------|
-| presidencia@administradoramutual.com.br | Presidência | Master |
-| diretoria@administradoramutual.com.br | Diretoria | Master |
-| comercial@administradoramutual.com.br | Comercial | Master |
-| sinistro@administradoramutual.com.br | Sinistro | Master |
-| adm@administradoramutual.com.br | Administrativo | Master |
+| Variável | Uso |
+|---|---|
+| `AUTH_ADMIN_EMAIL` | Identidade administrativa normalizada no backend. |
+| `AUTH_ADMIN_PASSWORD_HASH` | Hash scrypt da senha administrativa. Nunca é enviado ao cliente. |
+| `AUTH_SESSION_SECRET` | Segredo usado para assinar e validar sessões. Deve ser rotacionado em caso de suspeita de exposição. |
 
-## Fluxo de Autenticação
+Para configurar ou rotacionar valores, utilize o painel de variáveis sensíveis do projeto Vercel e faça um redeploy de Production. Não crie arquivos `.env` ou `.production-secrets` dentro do repositório ou em diretórios compartilhados.
 
-1. **Acesso inicial**: Usuário tenta acessar `index.html` ou raiz do site
-2. **Verificação**: Script verifica se existe sessão válida no localStorage
-3. **Redirecionamento**: Se não autenticado, redireciona para `login.html`
-4. **Login**: Usuário insere email e senha
-5. **Validação**: Sistema valida credenciais contra lista de usuários
-6. **Sessão**: Se válido, cria sessão no localStorage com timestamp
-7. **Acesso**: Redireciona para página solicitada ou index.html
-8. **Exibição**: Mostra barra de usuário com nome, email e botão "Sair"
+## Controles de segurança
 
-## Segurança
+A sessão usa cookie `HttpOnly`, `Secure` e `SameSite=Strict`, com expiração definida. As respostas de login não retornam senha, hash, segredo ou token legível pelo JavaScript. As páginas protegidas não devem exibir dados até que `GET /api/auth/me` confirme a sessão.
 
-### Implementado
-- ✅ Validação de credenciais no cliente
-- ✅ Expiração automática de sessão (24h)
-- ✅ Proteção de todas as páginas
-- ✅ Senhas não armazenadas na sessão
-- ✅ Redirecionamento automático se não autenticado
+A política de segurança do portal impede execução de scripts inline não autorizados, bloqueia framing externo, evita sniffing de conteúdo e desativa cache de respostas de autenticação. Os endpoints rejeitam métodos não utilizados e devem manter respostas sem dados sensíveis.
 
-### Recomendações Futuras
-- 🔄 Migrar para autenticação backend (Firebase, Auth0, etc.)
-- 🔄 Implementar hash de senhas
-- 🔄 Adicionar autenticação de dois fatores (2FA)
-- 🔄 Implementar rate limiting para tentativas de login
-- 🔄 Adicionar logs de auditoria de acesso
+## Testes obrigatórios
 
-## Tecnologias Utilizadas
+Antes de cada publicação, execute a suíte de autenticação e confirme os seguintes cenários: login válido; senha inválida; e-mail inválido; configuração ausente; sessão válida; sessão ausente; logout; cookie com atributos de segurança; acesso direto a página protegida; ausência de credenciais em HTML, bundles, sourcemaps, `localStorage`, `sessionStorage`, query strings e logs.
 
-- **HTML5** - Estrutura das páginas
-- **CSS3** - Estilização e responsividade
-- **JavaScript ES6+** - Lógica de autenticação
-- **localStorage** - Armazenamento de sessão
-- **sessionStorage** - Redirecionamento pós-login
+A inspeção do valor corrente de um campo de senha no painel do navegador, depois que o próprio usuário o digitou, não significa que a senha esteja hardcoded no site. O critério de segurança é que o valor não exista no HTML inicial, no bundle público, no storage, nos logs ou nas respostas da API, e que seja enviado somente ao endpoint server-side por HTTPS.
 
-## Deploy
+## Incidentes e rotação
 
-O sistema foi deployado automaticamente via **Vercel** após push para o repositório GitHub.
+Se um segredo aparecer em qualquer artefato público, histórico Git, preview, log ou captura de tela, trate-o como comprometido. Revogue a senha administrativa, gere novo hash scrypt, altere `AUTH_SESSION_SECRET`, faça redeploy e repita a inspeção em sessão limpa. O incidente deve ser documentado sem incluir o valor comprometido.
 
-### Comandos Executados
-```bash
-git add auth.js login.html index.html
-git commit -m "feat: Adicionar sistema de autenticação com 5 usuários master"
-git push origin master
-```
+## Operação e documentação
 
-### URL de Produção
-https://sistemas.administradoramutual.com.br
-
-## Testes Realizados
-
-✅ **Login com credenciais válidas** - Funcionando  
-✅ **Login com credenciais inválidas** - Mensagem de erro exibida  
-✅ **Redirecionamento pós-login** - Para index.html ou URL solicitada  
-✅ **Proteção de página** - Redireciona para login se não autenticado  
-✅ **Barra de usuário** - Exibe informações corretas  
-✅ **Logout** - Limpa sessão e redireciona para login  
-✅ **Expiração de sessão** - Após 24h redireciona para login  
-✅ **Responsividade** - Funciona em mobile e desktop  
-
-## Manutenção
-
-### Adicionar Novo Usuário
-Edite o arquivo `auth.js` e adicione um novo objeto ao array `MASTER_USERS`:
-
-```javascript
-{
-    email: 'novo@administradoramutual.com.br',
-    password: 'senha123',
-    name: 'Nome do Usuário',
-    level: 'Master'
-}
-```
-
-### Alterar Tempo de Expiração
-No arquivo `auth.js`, método `loadSession()`, altere a linha:
-
-```javascript
-if (hoursDiff < 24) { // Altere 24 para o número de horas desejado
-```
-
-### Proteger Novas Páginas
-Adicione ao final do HTML, antes de `</body>`:
-
-```html
-<script src="auth.js"></script>
-<script>
-    authManager.protectPage();
-</script>
-```
-
-## Suporte
-
-Para dúvidas ou problemas, entre em contato com a equipe de desenvolvimento.
-
----
-
-**Data de Implementação**: 01/11/2025  
-**Versão**: 1.0.0  
-**Status**: ✅ Em Produção
-
+Alterações de autenticação devem ser versionadas no GitHub, revisadas antes do merge e registradas na documentação central em `docs.administradoramutual.com.br`. A documentação central deve explicar a arquitetura, os endpoints, os controles, o procedimento de rotação e os testes de validação, sem armazenar credenciais.
