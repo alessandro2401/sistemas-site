@@ -1,105 +1,93 @@
-/**
- * Sistema de Autenticação - Administradora Mutual
- * Acesso restrito aos usuários autorizados.
- */
-const AUTHORIZED_USERS = [
-    {
-        email: 'moderador@grupommb.com',
-        password: 'Sou@2026br',
-        name: 'Moderador'
-    }
-];
-
-const STORAGE_KEY = 'mutual_auth_session';
-
 class AuthManager {
-    constructor() {
+  constructor() {
+    this.currentUser = null;
+  }
+
+  async checkSession() {
+    try {
+      const response = await fetch('/api/auth/me', {
+        method: 'GET',
+        credentials: 'include',
+        headers: { Accept: 'application/json' },
+        cache: 'no-store',
+      });
+      if (!response.ok) {
         this.currentUser = null;
-        this.loadSession();
+        return false;
+      }
+      const payload = await response.json();
+      this.currentUser = payload.authenticated ? payload.user : null;
+      return Boolean(this.currentUser);
+    } catch (_) {
+      this.currentUser = null;
+      return false;
     }
+  }
 
-    loadSession() {
-        try {
-            const sessionData = sessionStorage.getItem(STORAGE_KEY);
-            if (sessionData) {
-                const session = JSON.parse(sessionData);
-                if (session && session.user && session.user.email) {
-                    const isAuthorized = AUTHORIZED_USERS.some(
-                        u => u.email.toLowerCase() === session.user.email.toLowerCase()
-                    );
-                    if (isAuthorized) {
-                        this.currentUser = session.user;
-                        return true;
-                    }
-                }
-            }
-            return false;
-        } catch (error) {
-            return false;
-        }
+  async login(email, password) {
+    try {
+      const response = await fetch('/api/auth/login', {
+        method: 'POST',
+        credentials: 'include',
+        headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+        body: JSON.stringify({ email, password }),
+      });
+      const payload = await response.json().catch(() => ({}));
+      if (!response.ok || !payload.success) {
+        return { success: false, message: payload.error || 'E-mail ou senha incorretos.' };
+      }
+      this.currentUser = payload.user || null;
+      return { success: true, user: this.currentUser };
+    } catch (_) {
+      return { success: false, message: 'Não foi possível conectar ao servidor de autenticação.' };
     }
+  }
 
-    saveSession(user) {
-        try {
-            const session = { user: user, timestamp: new Date().toISOString() };
-            sessionStorage.setItem(STORAGE_KEY, JSON.stringify(session));
-            this.currentUser = user;
-            return true;
-        } catch (error) {
-            return false;
-        }
+  async logout() {
+    try {
+      await fetch('/api/auth/logout', {
+        method: 'POST',
+        credentials: 'include',
+        headers: { Accept: 'application/json' },
+        cache: 'no-store',
+      });
+    } finally {
+      this.currentUser = null;
     }
+  }
 
-    login(email, password) {
-        const user = AUTHORIZED_USERS.find(u =>
-            u.email.toLowerCase() === email.toLowerCase() &&
-            u.password === password
-        );
-        if (user) {
-            const userToSave = { email: user.email, name: user.name };
-            this.saveSession(userToSave);
-            return { success: true, user: userToSave };
-        } else {
-            return { success: false, message: 'E-mail ou senha incorretos.' };
-        }
-    }
+  getCurrentUser() {
+    return this.currentUser;
+  }
 
-    logout() {
-        sessionStorage.removeItem(STORAGE_KEY);
-        this.currentUser = null;
+  safeNext(value) {
+    try {
+      const url = new URL(value || '', window.location.origin);
+      if (url.origin === window.location.origin && url.pathname.startsWith('/')) return `${url.pathname}${url.search}${url.hash}`;
+    } catch (_) {
+      // Fall back to the portal home.
     }
+    return '/index.html';
+  }
 
-    isAuthenticated() {
-        return this.currentUser !== null;
-    }
+  redirectToLogin() {
+    const next = `${window.location.pathname}${window.location.search}${window.location.hash}`;
+    window.location.href = `/login.html?next=${encodeURIComponent(this.safeNext(next))}`;
+  }
 
-    getCurrentUser() {
-        return this.currentUser;
-    }
+  redirectAfterLogin() {
+    const next = new URLSearchParams(window.location.search).get('next');
+    window.location.href = this.safeNext(next || '/index.html');
+  }
 
-    protectPage() {
-        if (!this.isAuthenticated()) {
-            // Determina o caminho correto para login.html
-            const currentPath = window.location.pathname;
-            const depth = (currentPath.match(/\//g) || []).length - 1;
-            const prefix = depth > 0 ? '../'.repeat(depth) : '';
-            sessionStorage.setItem('redirect_after_login', window.location.href);
-            window.location.href = prefix + 'login.html';
-            return false;
-        }
-        return true;
+  async protectPage() {
+    const authenticated = await this.checkSession();
+    if (!authenticated) {
+      this.redirectToLogin();
+      return false;
     }
-
-    redirectAfterLogin() {
-        const redirectUrl = sessionStorage.getItem('redirect_after_login');
-        sessionStorage.removeItem('redirect_after_login');
-        if (redirectUrl && redirectUrl.includes(window.location.hostname)) {
-            window.location.href = redirectUrl;
-        } else {
-            window.location.href = 'index.html';
-        }
-    }
+    return true;
+  }
 }
 
-const authManager = new AuthManager();
-window.authManager = authManager;
+window.authManager = new AuthManager();

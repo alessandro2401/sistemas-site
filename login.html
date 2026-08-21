@@ -164,7 +164,7 @@
             </svg>
             Acesso restrito a usuários autorizados
         </div>
-        <form id="loginForm" onsubmit="handleLogin(event)">
+        <form id="loginForm">
             <div class="form-group">
                 <label for="email">E-mail</label>
                 <div class="input-wrapper">
@@ -183,7 +183,7 @@
                         <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
                     </svg>
                     <input type="password" id="password" placeholder="••••••••••••" required autocomplete="current-password">
-                    <button type="button" class="toggle-password" onclick="togglePassword()">
+                    <button type="button" class="toggle-password" aria-label="Mostrar ou ocultar senha">
                         <svg id="eyeIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                             <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
                             <circle cx="12" cy="12" r="3"/>
@@ -196,41 +196,7 @@
         </form>
         <p class="footer-text">Administradora Mutual &mdash; Acesso exclusivo para usuários autorizados.</p>
     </div>
-    <script src="auth.js"></script>
-    <script>
-        // Se já estiver autenticado, redireciona para index
-        if (authManager.isAuthenticated()) {
-            window.location.href = 'index.html';
-        }
-
-        function handleLogin(e) {
-            e.preventDefault();
-            const email = document.getElementById('email').value.trim();
-            const password = document.getElementById('password').value;
-            const btn = document.getElementById('btnLogin');
-            const errorMsg = document.getElementById('errorMsg');
-
-            btn.disabled = true;
-            btn.textContent = 'Verificando...';
-            errorMsg.style.display = 'none';
-
-            setTimeout(() => {
-                const result = authManager.login(email, password);
-                if (result.success) {
-                    btn.textContent = 'Acesso liberado!';
-                    authManager.redirectAfterLogin();
-                } else {
-                    errorMsg.style.display = 'block';
-                    btn.disabled = false;
-                    btn.textContent = 'Entrar no Portal';
-                }
-            }, 400);
-        }
-
-        function togglePassword() {
-            const input = document.getElementById('password');
-            input.type = input.type === 'password' ? 'text' : 'password';
-        }
-    </script>
+    <script src="/auth.js" defer></script>
+    <script src="/login.js" defer></script>
 </body>
 </html>

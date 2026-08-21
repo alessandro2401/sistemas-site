@@ -10,53 +10,7 @@
     <link rel="icon" type="image/png" sizes="512x512" href="favicon-512.png">
     <link rel="stylesheet" href="styles.css">
     <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
-    <script>
-    /* Bloqueia o badge "Made with Manus" — versão segura, sem remover CSS/scripts */
-    (function() {
-        var MANUS_SELECTORS = [
-            '[data-manus]',
-            '[id*="manus-badge"]',
-            '[id*="manus-widget"]',
-            '[class*="manus-badge"]',
-            '[class*="manus-widget"]',
-            '[class*="manus-branding"]',
-            'a[href*="manus.im"]'
-        ];
-
-        function removeManusBadge() {
-            MANUS_SELECTORS.forEach(function(selector) {
-                try {
-                    document.querySelectorAll(selector).forEach(function(el) {
-                        // Nunca remover style, script, link, head, body, html
-                        var tag = el.tagName ? el.tagName.toLowerCase() : '';
-                        if (['style','script','link','head','body','html','meta'].indexOf(tag) === -1) {
-                            el.remove();
-                        }
-                    });
-                } catch(e) {}
-            });
-        }
-
-        if (window.MutationObserver) {
-            var observer = new MutationObserver(function(mutations) {
-                mutations.forEach(function(m) {
-                    if (m.addedNodes.length) removeManusBadge();
-                });
-            });
-            observer.observe(document.documentElement, { childList: true, subtree: true });
-        }
-
-        if (document.readyState === 'loading') {
-            document.addEventListener('DOMContentLoaded', removeManusBadge);
-        } else {
-            removeManusBadge();
-        }
-        window.addEventListener('load', function() {
-            setTimeout(removeManusBadge, 500);
-            setTimeout(removeManusBadge, 2000);
-        });
-    })();
-    </script>
+    <script src="/manus-badge.js" defer></script>
 </head>
 <body>
     <!-- Barra de usuário -->
@@ -291,29 +245,7 @@
         </div>
     </div>
 
-    <script src="auth.js"></script>
-    <script>
-        // Renderizar ícones Lucide
-        lucide.createIcons();
-
-        // Proteger página — redireciona para login se não autenticado
-        if (!authManager.protectPage()) {
-            // Será redirecionado
-        } else {
-            document.addEventListener('DOMContentLoaded', function() {
-                var user = authManager.getCurrentUser();
-                if (user) {
-                    document.getElementById('userName').textContent = user.name;
-                    document.getElementById('userEmail').textContent = user.email;
-                    document.getElementById('userBar').style.display = 'flex';
-                }
-
-                document.getElementById('btnLogout').addEventListener('click', function() {
-                    authManager.logout();
-                    window.location.href = 'login.html';
-                });
-            });
-        }
-    </script>
+    <script src="/auth.js" defer></script>
+    <script src="/portal.js" defer></script>
 </body>
 </html>
